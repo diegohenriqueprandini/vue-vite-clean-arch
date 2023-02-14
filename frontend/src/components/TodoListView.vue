@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue';
-import axios from "axios";
 
     const data: any = reactive({ todos: [] });
     const description = ref("");
