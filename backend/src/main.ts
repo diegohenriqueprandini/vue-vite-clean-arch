@@ -16,7 +16,6 @@ const todos: any = [
 ];
 
 app.get("/todos", function (req, res) {
-    console.log("GET /todos");
     res.json(todos);
 });
 
