@@ -1,45 +1,48 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue';
+import { ref, reactive, onMounted, computed, inject } from 'vue';
+import HttpClient from '../infra/HttpClient';
 
-    const data: any = reactive({ todos: [] });
-    const description = ref("");
+const httpClient = inject("httpClient") as HttpClient;
 
-    async function addItem(itemDescription: string) {
-        if (!itemDescription) return;
-        if (data.todos.some((item: any) => item.description === itemDescription)) return;
-        if (data.todos.filter((item: any) => !item.done).length > 4) return;
-        const item = { id: uuid(), description: itemDescription, done: false };
-        data.todos.push(item);
-        description.value = "";
-        await axios.post("http://localhost:3000/todos", item);
-    }
+const data: any = reactive({ todos: [] });
+const description = ref("");
 
-    async function removeItem(item: any) {
-        data.todos.splice(data.todos.indexOf(item), 1);
-        await axios.delete(`http://localhost:3000/todos/${item.id}`);
-    }
+async function addItem(itemDescription: string) {
+    if (!itemDescription) return;
+    if (data.todos.some((item: any) => item.description === itemDescription)) return;
+    if (data.todos.filter((item: any) => !item.done).length > 4) return;
+    const item = { id: uuid(), description: itemDescription, done: false };
+    data.todos.push(item);
+    description.value = "";
+    await httpClient.post("http://localhost:3000/todos", item);
+}
 
-    async function toggleDone(item: any) {
-        item.done = !item.done
-        await axios.put(`http://localhost:3000/todos/${item.id}`, item);
-    }
+async function removeItem(item: any) {
+    data.todos.splice(data.todos.indexOf(item), 1);
+    await httpClient.delete(`http://localhost:3000/todos/${item.id}`);
+}
 
-    const completed = computed(() => {
-        const total = data.todos.length;
-        if (total === 0)
-            return 0;
-        const done = data.todos.filter((todo: any) => todo.done).length;
-        return Math.round((done/total) * 100);
-    });
+async function toggleDone(item: any) {
+    item.done = !item.done
+    await httpClient.put(`http://localhost:3000/todos/${item.id}`, item);
+}
 
-    onMounted(async () => {
-        const response = await axios.get("http://localhost:3000/todos")
-        data.todos = response.data;
-    });
+const completed = computed(() => {
+    const total = data.todos.length;
+    if (total === 0)
+        return 0;
+    const done = data.todos.filter((todo: any) => todo.done).length;
+    return Math.round((done/total) * 100);
+});
 
-    function uuid() {
-        return Math.floor(Math.random() * 1000);
-    }
+onMounted(async () => {
+    const response = await httpClient.get("http://localhost:3000/todos")
+    data.todos = response.data;
+});
+
+function uuid() {
+    return Math.floor(Math.random() * 1000);
+}
 </script>
 
 <template>

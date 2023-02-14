@@ -4,18 +4,22 @@ import axios from "axios";
 export default class AxiosHttpClient implements HttpClient {
 
     async get(url: string): Promise<any> {
-        await axios.get(url)
+        const response = await axios.get(url)
+        return response.data;
     }
 
-    async post(url: string, body: any): Promise<void> {
-        await axios.post(url, body);
+    async post(url: string, body: any): Promise<any> {
+        const response = await axios.post(url, body);
+        return response.data;
     }
 
-    async put(url: string, body: any): Promise<void> {
-        await axios.put(url, body);
+    async put(url: string, body: any): Promise<any> {
+        const response = await axios.put(url, body);
+        return response.data;
     }
 
-    async delete(url: string): Promise<void> {
-        await axios.delete(url);
+    async delete(url: string): Promise<any> {
+        const response = await axios.delete(url);
+        return response.data;
     }   
 }
