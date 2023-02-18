@@ -1,6 +1,9 @@
+import Item from "../entities/Item"
+import TodoList from "../entities/TodoList"
+
 export default interface TodoGateway {
-    getItens(): Promise<any>
-    addItem(item: any): Promise<any>
-    updateItem(item: any): Promise<any>
-    removeItem(id: string): Promise<any>
+    getTodoList(): Promise<TodoList>
+    addItem(item: Item): Promise<void>
+    updateItem(item: Item): Promise<void>
+    removeItem(id: string): Promise<void>
 }

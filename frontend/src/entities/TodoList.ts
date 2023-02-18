@@ -1,42 +1,50 @@
-export default class TodoList {
- 
-    itens: any;
+import Item from "./Item";
+import Observable from "./Observable";
 
-    constructor() {
-        this.itens = []
+export default class TodoList extends Observable {
+ 
+    items: Item[];
+
+    constructor(items?: any) {
+        super();
+        this.items = []
+        if (items) {
+            items.forEach((item: any) => {
+                this.items.push(new Item(item.id, item.description, item.done));
+            });
+        }        
     }
 
     addItem(description: string) {
         if (!description) return;
-        if (this.itens.some((item: any) => item.description === description)) return;
-        if (this.itens.filter((item: any) => !item.done).length > 4) return;
-        const item = { id: uuid(), description, done: false };
-        this.itens.push(item);
-    }
-    
-    removeItem(item: any) {
-        this.itens.splice(this.itens.indexOf(item), 1);
-    }
-    
-    toggleDone(item: any) {
-        item.done = !item.done
+        if (this.items.some((item: any) => item.description === description)) return;
+        if (this.items.filter((item: any) => !item.done).length > 4) return;
+        const item = new Item(null, description);
+        this.items.push(item);
+        super.notify("addItem", item);
     }
 
-    getItem(description: string) {
-        const todo = this.itens.find((todo: any) => todo.description === description);
+    removeItem(item: Item) {
+        this.items.splice(this.items.indexOf(item), 1);
+        super.notify("removeItem", item);
+    }
+
+    toggleDone(item: Item) {
+        item.done = !item.done
+        super.notify("toggleDone", item);
+    }
+
+    getItem(description: string): Item {
+        const todo = this.items.find((todo: any) => todo.description === description);
         if (!todo)
             throw new Error("Todo item not found");        
         return todo;
     }
-   
-    getCompleted() {
-        const total = this.itens.length;
+
+    getCompleted(): number {
+        const total = this.items.length;
         if (total === 0) return 0;
-        const done = this.itens.filter((todo: any) => todo.done).length;
+        const done = this.items.filter((todo: any) => todo.done).length;
         return Math.round((done/total) * 100);
     }
-}
-
-function uuid() {
-    return Math.floor(Math.random() * 1000);
 }
