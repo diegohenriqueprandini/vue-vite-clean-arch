@@ -5,8 +5,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-function uuid() {
-    return Math.floor(Math.random() * 1000);
+function uuid(): string {
+    return Math.floor(Math.random() * 1000).toString();
 }
 
 const todos: any = [
@@ -25,7 +25,7 @@ app.post("/todos", function (req, res) {
 });
 
 app.delete("/todos/:id", function (req, res) {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const todo = todos.find((todo: any) => todo.id === id);
     if (todo) {
         todos.splice(todos.indexOf(todo), 1);
@@ -34,7 +34,7 @@ app.delete("/todos/:id", function (req, res) {
 });
 
 app.put("/todos/:id", function (req, res) {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const todo = todos.find((todo: any) => todo.id === id);
     if (todo) {
         todo.done = req.body.done;

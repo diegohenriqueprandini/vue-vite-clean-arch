@@ -17,8 +17,8 @@ export default class TodoList extends Observable {
 
     addItem(description: string) {
         if (!description) return;
-        if (this.items.some((item: any) => item.description === description)) return;
-        if (this.items.filter((item: any) => !item.done).length > 4) return;
+        if (this.items.some((item: Item) => item.description === description)) return;
+        if (this.items.filter((item: Item) => !item.done).length > 4) return;
         const item = new Item(null, description);
         this.items.push(item);
         super.notify("addItem", item);
@@ -35,7 +35,7 @@ export default class TodoList extends Observable {
     }
 
     getItem(description: string): Item {
-        const todo = this.items.find((todo: any) => todo.description === description);
+        const todo = this.items.find((todo: Item) => todo.description === description);
         if (!todo)
             throw new Error("Todo item not found");        
         return todo;
@@ -44,7 +44,7 @@ export default class TodoList extends Observable {
     getCompleted(): number {
         const total = this.items.length;
         if (total === 0) return 0;
-        const done = this.items.filter((todo: any) => todo.done).length;
+        const done = this.items.filter((todo: Item) => todo.done).length;
         return Math.round((done/total) * 100);
     }
 }

@@ -3,6 +3,7 @@ import { ref, reactive, onMounted, computed, inject } from 'vue';
 import TodoGateway from '../gateways/TodoGateway';
 import TodoList from '../entities/TodoList';
 import TodoListComponent from './TodoListComponent.vue';
+import Item from '../entities/Item';
 
 const todoGateway = inject("todoGateway") as TodoGateway;
 
@@ -11,15 +12,15 @@ const data: any = reactive({ todoList: new TodoList() });
 onMounted(async () => {
     const todoList = await todoGateway.getTodoList();
 
-    todoList.register("addItem", async (item: any) => {
+    todoList.register("addItem", async (item: Item) => {
         await todoGateway.addItem(item);
     });
 
-    todoList.register("removeItem", async (item: any) => {
+    todoList.register("removeItem", async (item: Item) => {
         await todoGateway.removeItem(item.id);
     });
 
-    todoList.register("toggleDone", async (item: any) => {
+    todoList.register("toggleDone", async (item: Item) => {
         await todoGateway.updateItem(item);
     });
 
